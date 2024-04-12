@@ -1,3 +1,6 @@
 credentials.ts
 node_modules
 events.json
+# Local Netlify folder
+.netlify
+dist
