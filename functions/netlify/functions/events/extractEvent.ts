@@ -1,8 +1,7 @@
-import { fetchVenueDetails } from "./fetchFromEventbrite";
+import { fetchVenueDetails } from "./fetchEvents";
 import { ExtractedEvent, Event, Location } from "./types";
 
 function filterLiveEvents(events: Event[]): Event[] {
-  console.log(events);
   return events.filter(event => event.status === 'live');
 }
 

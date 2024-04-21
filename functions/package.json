@@ -1,6 +1,7 @@
 {
-  "name": "lc-calendar",
+  "name": "functions",
   "version": "1.0.0",
+  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -13,7 +14,7 @@
     "typescript": "^5.4.5"
   },
   "dependencies": {
-    "undici-types": "^5.26.5"
-  },
-  "description": ""
+    "@netlify/functions": "^2.6.0",
+    "redis": "^4.6.13"
+  }
 }
