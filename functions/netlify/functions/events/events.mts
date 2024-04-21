@@ -3,9 +3,14 @@ import { fetchToCache } from "./cache";
 
 
 export default async (req: Request, context: Context) => {
-  const data = await fetchToCache();
+  try {
+    const data = await fetchToCache();
+    return new Response(JSON.stringify(data))
+  }  catch (error) {
+    console.log(error)
+    return new Response("An error occurred while fetching data", { status: 200 })
+  }
 
-  return new Response(JSON.stringify(data))
 };
 
 export const config: Config = {

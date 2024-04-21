@@ -17,6 +17,8 @@ const client = createClient({
 
 client.on('error', (err) => console.log('Redis Client Error', err));
 
+let connected = false;
+
 async function isStale() {
     const lastFetchTimeStr = await client.get(EVENTS_LAST_FETCH_KEY);
     const currentTime = Date.now();
@@ -26,7 +28,11 @@ async function isStale() {
 
 export async function fetchFromCache(): Promise<any> {
     try {
-        await client.connect();
+        if (!connected) {
+            await client.connect();
+            connected = true;
+        }
+        
         const data = await client.get(EVENTS_CACHE_KEY);
         return data ? JSON.parse(data) : null;
     } catch (error) {
@@ -36,10 +42,14 @@ export async function fetchFromCache(): Promise<any> {
 }
 
 export async function fetchToCache() {
-    await client.connect();
+    try {
+        if (!connected) {
+            await client.connect();
+            connected = true;
+        }
 
-    if (await isStale()) {
-        try {
+        if (await isStale()) {
+
             const events = await fetchEvents(eventbriteOrganizerId);
             const extractedData = await extractEventData(events);
             const currentTime = Date.now();
@@ -50,9 +60,13 @@ export async function fetchToCache() {
             await client.set(EVENTS_LAST_FETCH_KEY, currentTime.toString());
 
             return extractedData;
-        } catch (error) {
-            console.error('Writing to cache error:', error);
-            throw error;
+
         }
+
+        return await fetchFromCache();
+    } catch (error) {
+        console.error('Writing to cache error:', error);
+        throw error;
     }
+
 }
